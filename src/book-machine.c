@@ -134,3 +134,55 @@ void list_bookings(void)
 	/* House keeping. */
 	fclose(file);
 }
+
+/**
+ * @brief Cancels a booking.
+ *
+ * @param id ID of targeting booking.
+ */
+void cancel_booking(int id)
+{
+	struct booking curr; /* Current booking. */
+	FILE *file;          /* Bookings file.   */
+	FILE *tmp;           /* Temporary file.  */
+
+	/* Open bookings file. */
+	if ((file = fopen(bookings, "r+")) == NULL)
+	{
+		fprintf(stderr, "failed to open bookings file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Open temporary file. */
+	if ((tmp = tmpfile()) == NULL)
+	{
+		fprintf(stderr, "failed to open temporary file\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	/* Copy bookings to temporary file. */
+	for (int i = 0; fread(&curr, sizeof(struct booking), 1, file) == 1; i++)
+	{
+		/* Skip this booking. */
+		if (curr.id == id)
+			continue;
+
+		fwrite(&curr, sizeof(struct booking), 1, tmp);
+	}
+
+	/* Truncate bookings file. */
+	if ((file = freopen(bookings, "w+", file)) == NULL)
+	{
+		fprintf(stderr, "failed to truncate bookings file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Copy bookings back to bookings file. */
+	rewind(tmp);
+	for (int i = 0; fread(&curr, sizeof(struct booking), 1, tmp) == 1; i++)
+		fwrite(&curr, sizeof(struct booking), 1, file);
+	
+	/* House keeping. */
+	fclose(tmp);
+	fclose(file);
+}

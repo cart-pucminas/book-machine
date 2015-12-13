@@ -36,6 +36,11 @@ typedef enum {
 static options_type option;
 
 /**
+ * @brief Booking to cancel.
+ */
+static int id = -1;
+
+/**
  * @brief Prints program usage and exits.
  */
 static void usage(void)
@@ -70,6 +75,7 @@ static void getargs(int argc, char **argv)
 		if (argc < 3)
 			usage();
 		option = CANCEL;
+		id = atoi(argv[2]);
 	}
 	
 	/* List bookings. */
@@ -97,6 +103,7 @@ int main(int argc, char **argv)
 		
 		/* Cancels a booking. */
 		case CANCEL:
+			cancel_booking(id);
 			break;
 		
 		/* List current bookings. */
