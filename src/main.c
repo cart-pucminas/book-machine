@@ -82,6 +82,10 @@ static void getargs(int argc, char **argv)
 			id = atoi(argv[2]);
 		}
 		
+		/* Print help information. */
+		else if (!(strcmp(argv[1], "--help")))
+			usage();
+		
 		/* List bookings. */
 		else if (!(strcmp(argv[1], "--list")))
 			option = LIST;
