@@ -52,7 +52,7 @@ install: all
 	@chown root:root $(BOOKINGS_FILE) 
 	@mkdir -p $(PREFIX)/bin
 	@mv $(BINDIR)/$(EXEC) $(PREFIX)/bin/
-	@chmod 4555 $(PREFIX)/bin/$(EXEC)
+	@chmod 6555 $(PREFIX)/bin/$(EXEC)
 	@chown root:root $(BOOKINGS_FILE)
 	@echo "$(PREFIX)/bin/$(EXEC) --update" >> /etc/profile
 

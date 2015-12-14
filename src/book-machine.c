@@ -24,6 +24,9 @@
 
 #include <book-machine.h>
 
+#define STR(X) #X
+#define ASSTR(X) STR(X)
+
 /**
  * @brief Booking.
  */
@@ -37,7 +40,7 @@ struct booking
 /**
  * @brief Bookings filename.
  */
-static const char *bookings = "BOOKINGS_FILE";
+static const char *bookings = ASSTR(BOOKINGS_FILE);
 
 /**
  * @brief Gets next night.
@@ -83,7 +86,7 @@ void book_machine(void)
 	/* Open bookings file. */
 	if ((file = fopen(bookings, "r+")) == NULL)
 	{
-		fprintf(stderr, "failed to open bookings file\n");
+		fprintf(stderr, "failed to open bookings file %s\n", bookings);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -111,7 +114,7 @@ void list_bookings(void)
 	/* Open bookings file. */
 	if ((file = fopen(bookings, "r")) == NULL)
 	{
-		fprintf(stderr, "failed to open bookings file\n");
+		fprintf(stderr, "failed to open bookings file %s\n", bookings);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -150,7 +153,7 @@ void cancel_booking(int id)
 	/* Open bookings file. */
 	if ((file = fopen(bookings, "r+")) == NULL)
 	{
-		fprintf(stderr, "failed to open bookings file\n");
+		fprintf(stderr, "failed to open bookings file %s\n", bookings);
 		exit(EXIT_FAILURE);
 	}
 
@@ -206,7 +209,7 @@ void update_bookings(void)
 	/* Open bookings file. */
 	if ((file = fopen(bookings, "r+")) == NULL)
 	{
-		fprintf(stderr, "failed to open bookings file\n");
+		fprintf(stderr, "failed to open bookings file %s\n", bookings);
 		exit(EXIT_FAILURE);
 	}
 
@@ -242,7 +245,7 @@ void update_bookings(void)
 	/* Truncate bookings file. */
 	if ((file = freopen(bookings, "w+", file)) == NULL)
 	{
-		fprintf(stderr, "failed to truncate bookings file\n");
+		fprintf(stderr, "failed to truncate bookings file %s\n", bookings);
 		exit(EXIT_FAILURE);
 	}
 
