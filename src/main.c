@@ -27,7 +27,8 @@
 typedef enum {
 	BOOK,   /**< Books this machine.    */
 	CANCEL, /**< Cancels a booking.     */
-	LIST    /**< List current bookings. */
+	LIST,   /**< List current bookings. */
+	UPDATE  /**< Update bookings.       */
 } options_type;	
 
 /**
@@ -52,6 +53,7 @@ static void usage(void)
 	printf("    --cancel <id> cancels a booking\n");
 	printf("    --help        prints this information and exits\n");
 	printf("    --list        list current bookings\n");
+	printf("    --update      update bookings\n");
 	
 	exit(EXIT_SUCCESS);
 }
@@ -82,6 +84,10 @@ static void getargs(int argc, char **argv)
 	else if (!(strcmp(argv[1], "--list")))
 		option = LIST;
 	
+	/* Update bookings. */
+	else if (!(strcmp(argv[1], "--update")))
+		option = UPDATE;
+	
 	/* Help. */
 	else
 		usage();
@@ -109,6 +115,11 @@ int main(int argc, char **argv)
 		/* List current bookings. */
 		case LIST:
 			list_bookings();
+			break;
+		
+		/* Update bookings. */
+		case UPDATE:
+			update_bookings();
 			break;
 	}
 	

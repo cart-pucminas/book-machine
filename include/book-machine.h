@@ -22,5 +22,6 @@
 	extern void book_machine(void);
 	extern void list_bookings(void);
 	extern void cancel_booking(int);
+	extern void update_bookings(void);
 
 #endif /* BOOK_MACHINE_H_ */

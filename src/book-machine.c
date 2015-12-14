@@ -87,18 +87,9 @@ void book_machine(void)
 		exit(EXIT_FAILURE);
 	}
 	
+	/* Insert booking. */
 	for (int i = 0; fread(&curr, sizeof(struct booking), 1, file) == 1; i++)
 	{
-		/* Empty slot found. */
-		if (next.date.yday < curr.date.yday)
-		{
-			fseek(file, -sizeof(struct booking), SEEK_CUR);
-
-			fwrite(&next, sizeof(struct booking), 1, file);
-
-			break;
-		}
-
 		next.date = next_night(curr.date);
 		next.id = curr.id + 1;
 	}
@@ -191,6 +182,69 @@ void cancel_booking(int id)
 	rewind(tmp);
 	for (int i = 0; fread(&curr, sizeof(struct booking), 1, tmp) == 1; i++)
 		fwrite(&curr, sizeof(struct booking), 1, file);
+	
+	/* House keeping. */
+	fclose(tmp);
+	fclose(file);
+}
+
+/**
+ * @brief Updates booking file.
+ */
+void update_bookings(void)
+{
+	time_t t;            /* Current time.   */
+	struct tm curr;      /* Current time.   */
+	struct booking next; /* Next booking.   */
+	FILE *file;          /* Bookings file.  */
+	FILE *tmp;           /* Temporary file. */
+	
+	/* Get current time. */
+	t = time(NULL);
+	curr = *localtime(&t);
+
+	/* Open bookings file. */
+	if ((file = fopen(bookings, "r+")) == NULL)
+	{
+		fprintf(stderr, "failed to open bookings file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Open temporary file. */
+	if ((tmp = tmpfile()) == NULL)
+	{
+		fprintf(stderr, "failed to open temporary file\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	/* Copy bookings to temporary file. */
+	for (int i = 0; fread(&next, sizeof(struct booking), 1, file) == 1; i++)
+	{
+		/* Skip this booking. */
+		if (curr.tm_year > next.date.tm_year)
+			continue;
+		else if (curr.tm_year == next.date.tm_year)
+		{
+			if (curr.tm_yday > next.date.tm_yday)
+				continue;
+			else if (curr.tm_yday == next.date.tm_yday)
+				printf("booking on board\n");
+		}
+
+		fwrite(&next, sizeof(struct booking), 1, tmp);
+	}
+
+	/* Truncate bookings file. */
+	if ((file = freopen(bookings, "w+", file)) == NULL)
+	{
+		fprintf(stderr, "failed to truncate bookings file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Copy bookings back to bookings file. */
+	rewind(tmp);
+	for (int i = 0; fread(&next, sizeof(struct booking), 1, tmp) == 1; i++)
+		fwrite(&next, sizeof(struct booking), 1, file);
 	
 	/* House keeping. */
 	fclose(tmp);
