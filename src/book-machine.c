@@ -56,7 +56,7 @@ static struct tm next_night(struct tm curr)
 	/* Reset some fields. */
 	curr.tm_sec = 0;
 	curr.tm_min = 0;
-	curr.tm_hour = 18;
+	curr.tm_hour = 0;
 		
 	t = mktime(&curr);
 	curr = *localtime(&t);
@@ -228,7 +228,12 @@ void update_bookings(void)
 			if (curr.tm_yday > next.date.tm_yday)
 				continue;
 			else if (curr.tm_yday == next.date.tm_yday)
-				printf("booking on board\n");
+			{
+				if (curr.tm_hour >= 8)
+					continue;
+				
+				printf("booking on board\n");	
+			}
 		}
 
 		fwrite(&next, sizeof(struct booking), 1, tmp);
