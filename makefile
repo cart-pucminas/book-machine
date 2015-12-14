@@ -15,10 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# Installation prefix.
+PREFIX = /usr/local
+
 # Directories
 BINDIR = bin
 INCDIR = include
 SRCDIR = src
+
+# Bookings file.
+BOOKINGS_FILE=$(PREFIX)/etc/bookings
 
 # Source files.
 SRC = $(wildcard $(SRCDIR)/*.c)
@@ -32,13 +38,32 @@ CC = gcc
 # Toolchain configuration.
 CFLAGS  = -Wall -Wextra
 CFLAGS += -pedantic -std=c99
-CFLAGS += -I $(INCDIR)
+CFLAGS += -I $(INCDIR) -DBOOKINGS_FILE=$(BOOKINGS_FILE)
 
 # Builds everything.
 all:
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(SRC) -o $(BINDIR)/$(EXEC)
-	
+
+# Installs book-machine.
+install: all
+	@touch $(BOOKINGS_FILE)
+	@chmod 600 $(BOOKINGS_FILE)
+	@chown root:root $(BOOKINGS_FILE) 
+	@mkdir -p $(PREFIX)/bin
+	@mv $(BINDIR)/$(EXEC) $(PREFIX)/bin/
+	@chmod 4555 $(PREFIX)/bin/$(EXEC)
+	@chown root:root $(BOOKINGS_FILE)
+	@echo "$(PREFIX)/bin/$(EXEC) --update" >> /etc/profile
+
+# Uninstalls book-machine.
+uninstall:
+	@rm -f $(BOOKINGS_FILE)
+	@rm -f $(PREFIX)/bin/$(EXEC)
+	@head -n -1 /etc/profile > /etc/profile2
+	@rm -f /etc/profile
+	@mv /etc/profile2 /etc/profile
+
 # Cleans compilation files.
 clean:
-	@rm -rf $(BINDIR)/$(EXEC)
+	@rm -f $(BINDIR)/$(EXEC)

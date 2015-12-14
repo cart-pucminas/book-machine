@@ -66,28 +66,31 @@ static void usage(void)
  */
 static void getargs(int argc, char **argv)
 {
-	/* Book machine. */
-	if (!(strcmp(argv[1], "--book")))
-		option = BOOK;
-	
-	/* Cancels a booking. */
-	else if (!(strcmp(argv[1], "--cancel")))
+	if (argc >= 2)
 	{
-		/* Wrong usage. */
-		if (argc < 3)
-			usage();
-		option = CANCEL;
-		id = atoi(argv[2]);
+		/* Book machine. */
+		if (!(strcmp(argv[1], "--book")))
+			option = BOOK;
+		
+		/* Cancels a booking. */
+		else if (!(strcmp(argv[1], "--cancel")))
+		{
+			/* Wrong usage. */
+			if (argc < 3)
+				usage();
+			option = CANCEL;
+			id = atoi(argv[2]);
+		}
+		
+		/* List bookings. */
+		else if (!(strcmp(argv[1], "--list")))
+			option = LIST;
+		
+		/* Update bookings. */
+		else if (!(strcmp(argv[1], "--update")))
+			option = UPDATE;
 	}
-	
-	/* List bookings. */
-	else if (!(strcmp(argv[1], "--list")))
-		option = LIST;
-	
-	/* Update bookings. */
-	else if (!(strcmp(argv[1], "--update")))
-		option = UPDATE;
-	
+
 	/* Help. */
 	else
 		usage();

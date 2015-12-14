@@ -37,7 +37,7 @@ struct booking
 /**
  * @brief Bookings filename.
  */
-static const char *bookings = "bookings";
+static const char *bookings = "BOOKINGS_FILE";
 
 /**
  * @brief Gets next night.
