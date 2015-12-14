@@ -89,6 +89,16 @@ void book_machine(void)
 	
 	for (int i = 0; fread(&curr, sizeof(struct booking), 1, file) == 1; i++)
 	{
+		/* Empty slot found. */
+		if (next.date.yday < curr.date.yday)
+		{
+			fseek(file, -sizeof(struct booking), SEEK_CUR);
+
+			fwrite(&next, sizeof(struct booking), 1, file);
+
+			break;
+		}
+
 		next.date = next_night(curr.date);
 		next.id = curr.id + 1;
 	}
